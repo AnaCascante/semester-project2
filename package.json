@@ -2,7 +2,7 @@
   "name": "semester-project2",
   "version": "1.0.0",
   "description": "A brief description of what this project does and who it's for.",
-  "main": "index.js",
+  "main": "index.mjs",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "vite",
