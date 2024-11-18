@@ -21,12 +21,17 @@
     <!-- links to other necessaries -->
   </head>
   <body class="bg-black text-white">
-    <nav class="bg-black">
+    <nav
+      class="fixed left-0 top-0 z-50 flex h-20 w-full items-center border-b-4 border-indigo-500 bg-black px-4 text-yellow-50 md:px-16 lg:px-24"
+    >
       <ul>
         <li><a href="/">Home</a></li>
         <li><button onclick="window.location.href='/login'">Log in</button></li>
       </ul>
     </nav>
+    <header class="flex flex-col items-center justify-center h-screen">
+      <h1 class="text-6xl">Bideals</h1>
+      <p class="text-2xl">Bid for the Best Deal</p>
     <h1 class="text-red-600">Bideals</h1>
     <p>Bid for the Best Deal</p>
     <div id="app"></div>
