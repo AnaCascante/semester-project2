@@ -2,6 +2,11 @@
 
 A brief description of what this project does and who it's for.
 
+# Bideals live demo 
+
+https://bideals.netlify.app
+
+
 ## Table of Contents
 
 - [Installation](#installation)
