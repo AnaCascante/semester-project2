@@ -20,7 +20,8 @@ let isLoggedIn = false
 
 function renderRoute() {
   const path = window.location.pathname
-  const route = routes[path]
+  const [basePath, param] = path.split('/').filter(Boolean)
+  const route = routes[`/${basePath}`] || routes[path]
   const root = document.getElementById('root')
 
   console.log('Current path:', path) // Debug
@@ -28,18 +29,23 @@ function renderRoute() {
 
   if (route) {
     root.innerHTML = ''
-    root.innerHTML = route()
+    root.innerHTML = param ? route(param) : route() // Pass param if needed
   } else {
     root.innerHTML = '<h1>404 - Page Not Found</h1>'
   }
 }
 
-function addLinkEventListeners() {
-  const links = document.querySelectorAll('nav a')
-  links.forEach((link) => {
-    link.addEventListener('click', (event) => {
+document.addEventListener('DOMContentLoaded', () => {
+  const body = document.querySelector('body')
+  body.insertAdjacentHTML('afterbegin', renderNavbar(isLoggedIn))
+  body.insertAdjacentHTML('beforeend', renderFooter())
+  renderRoute()
+
+  document.body.addEventListener('click', (event) => {
+    const link = event.target.closest('a')
+    if (link && link.getAttribute('href')) {
       event.preventDefault()
-      const href = event.currentTarget.getAttribute('href')
+      const href = link.getAttribute('href')
 
       if (href === '/logout') {
         isLoggedIn = false
@@ -48,22 +54,11 @@ function addLinkEventListeners() {
       }
 
       window.history.pushState(null, '', href)
-      document.querySelector('nav').remove()
-      document.querySelector('footer').remove()
-      document.body.insertAdjacentHTML('afterbegin', renderNavbar(isLoggedIn))
-      document.body.insertAdjacentHTML('beforeend', renderFooter())
+      renderNavbar(isLoggedIn)
+      renderFooter()
       renderRoute()
-      addLinkEventListeners()
-    })
+    }
   })
-}
-
-document.addEventListener('DOMContentLoaded', () => {
-  const body = document.querySelector('body')
-  body.insertAdjacentHTML('afterbegin', renderNavbar(isLoggedIn))
-  body.insertAdjacentHTML('beforeend', renderFooter())
-  renderRoute()
-  addLinkEventListeners()
 })
 
 window.onpopstate = renderRoute
