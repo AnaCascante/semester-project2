@@ -1,6 +1,6 @@
 export function renderLogin() {
   return `
-      <h1>Login</h1>
-      <p>Welcome to the login page!</p>
+      <h1 class="text-yellow-50">Login</h1>
+      
     `
 }
