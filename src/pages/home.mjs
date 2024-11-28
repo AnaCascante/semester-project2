@@ -1,9 +1,26 @@
-export function renderHome() {
+import { fetchAPI } from '../utils/api.mjs'
+
+export async function renderHome() {
+  const products = await fetchAPI('/auction/listings')
   return `
-     <header class="flex flex-col items-center justify-center h-screen">
+    <header class="flex flex-col items-center justify-center h-screen">
       <h1 class="text-6xl">Bideals</h1>
       <p class="text-2xl">Bid for the Best Deal</p>
       
     </header>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 p-4">
+      ${listings
+        .map(
+          (data) => `
+        <div class="card bg-white p-4 rounded shadow">
+          <h2 class="font-bold">${data.title}</h2>
+          <p>${data.description}</p>
+          <a href="/product/${data.id}" class="text-blue-500">View More</a>
+        </div>
+      `,
+        )
+        .join('')}
+    </div>
   `
 }
+// media url and alt, bid end date, current bid price, buy now price, bid button
