@@ -20,6 +20,7 @@ export async function renderProfile() {
         <div>
           <h1 class="text-3xl font-bold">${userData.username}</h1>
           <p class="text-sm text-gray-500">${userData.email}</p>
+          <p class="text-green-500 font-bold mt-2">Credits: ${userData.credits || 1000}</p>
           <button
             id="edit-avatar-button"
             class="bg-blue-500 text-white px-4 py-2 rounded mt-2"

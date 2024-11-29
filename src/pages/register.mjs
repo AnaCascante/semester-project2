@@ -64,8 +64,12 @@ export function setupRegisterHandlers() {
           // Store the token in local storage
           localStorage.setItem('token', response.token)
 
+          const credits = 1000
+
           // Show a success alert
-          alert('Registration successful! Redirecting to login...')
+          alert(
+            'Registration successful! You have been awarded $${credits} in credits.',
+          )
 
           // Redirect to login page
           window.location.href = '/login'
