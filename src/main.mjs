@@ -6,7 +6,7 @@ import { renderHome } from './pages/home.mjs'
 import { renderListing, setupBidHandlers } from './pages/listing.mjs'
 import { renderLogin } from './pages/login.mjs'
 import { renderRegister } from './pages/register.mjs'
-import { renderProfile } from './pages/profile.mjs'
+import { renderProfile, setupProfileHandlers } from './pages/profile.mjs'
 
 const routes = {
   '/': renderHome,
@@ -34,6 +34,10 @@ async function renderRoute() {
     const listingId = path.split('/listing/')[1]
     root.innerHTML = await renderListing(listingId) // Render single listing
     setupBidHandlers(listingId) // Setup bid functionality
+  } else if (path === '/profile') {
+    // Handle profile page
+    root.innerHTML = await renderProfile()
+    setupProfileHandlers() // Attach handlers for profile-specific actions
   } else {
     // Handle static routes
     const route = routes[path]

@@ -3,39 +3,43 @@ import { fetchApi } from '../utils/api.mjs'
 export function renderLogin() {
   console.log('Login page rendered')
   return `
-     
-      <div class="flex flex-col items-center justify-center h-screen">
-       <h1 class="text-6xl text-yellow-500">Login</h1>
-      <p class="text-2xl">make your bids!</p>
-
+    <div class="flex flex-col items-center justify-center h-screen">
+      <h1 class="text-6xl text-yellow-500">Login</h1>
+      <p class="text-2xl">Make your bids!</p>
       <div class="p-4">
-      <h1 class="text-2xl font-bold">Login</h1>
-      <form id="login-form" class="mt-4">
-        <input
-          type="email"
-          name="email"
-          placeholder="Email"
-          required
-          class="block w-full p-2 mb-4 border rounded bg-white text-black"
-        />
-        <input
-          type="password"
-          name="password"
-          placeholder="Password"
-          required
-          class="block w-full p-2 mb-4 border rounded bg-white text-black"
-        />
-        <button
-          type="submit"
-          class="bg-gray-600 text-white py-2 px-4 rounded w-full mb-4"
-        >
-          Login
-        </button>
-       <button type="button" onclick="window.location.href='/register'" class="bg-gray-600 text-white py-2 px-4 rounded w-full" > Register </button>
-      </form>
+        <h1 class="text-2xl font-bold">Login</h1>
+        <form id="login-form" class="mt-4">
+          <input
+            type="email"
+            name="email"
+            placeholder="Email"
+            required
+            class="block w-full p-2 mb-4 border rounded bg-white text-black"
+          />
+          <input
+            type="password"
+            name="password"
+            placeholder="Password"
+            required
+            class="block w-full p-2 mb-4 border rounded bg-white text-black"
+          />
+          <button
+            type="submit"
+            class="bg-gray-600 text-white py-2 px-4 rounded w-full mb-4"
+          >
+            Login
+          </button>
+          <button
+            type="button"
+            onclick="window.location.href='/register'"
+            class="bg-gray-600 text-white py-2 px-4 rounded w-full"
+          >
+            Register
+          </button>
+        </form>
+      </div>
     </div>
-    </div>
-    `
+  `
 }
 
 export function setupLoginHandlers() {
@@ -48,21 +52,29 @@ export function setupLoginHandlers() {
       const password = event.target.password.value
 
       try {
-        const response = await fetchAPI('/auth/login', {
+        // Log the user in
+        const response = await fetchApi('auth/login', {
           method: 'POST',
           body: JSON.stringify({ email, password }),
         })
 
+        console.log('Login response:', response)
+
         if (response.token) {
+          // Store the token in local storage
           localStorage.setItem('token', response.token)
-          alert('Login successful!')
-          window.location.href = '/profile' // Redirect to profile page
+
+          // Show a success alert
+          alert('Login successful! Redirecting to your profile...')
+
+          // Redirect to the profile page
+          window.location.href = '/profile'
         } else {
-          alert('Invalid credentials.')
+          alert('Invalid email or password.')
         }
       } catch (error) {
         console.error('Login error:', error)
-        alert('Something went wrong. Please try again.')
+        alert('An error occurred. Please try again.')
       }
     })
 }

@@ -3,41 +3,41 @@ import { fetchApi } from '../utils/api.mjs'
 export function renderRegister() {
   return `
     <div class="flex flex-col items-center justify-center h-screen">
-      <h1 class="text-6xl">Register </h1>
-      <p class="text-2xl">Start biding!</p>
+      <h1 class="text-6xl">Register</h1>
+      <p class="text-2xl">Start bidding!</p>
       <div class="p-4">
-      <h1 class="text-2xl font-bold">Register</h1>
-      <form id="register-form" class="mt-4">
-        <input
-          type="text"
-          name="name"
-          placeholder="Full Name"
-          required
-          class="block w-full p-2 mb-4 border rounded bg-white text-black"
-        />
-        <input
-          type="email"
-          name="email"
-          placeholder="Email@stud.noroff.no"
-          required
-          class="block w-full p-2 mb-4 border rounded bg-white text-black"
-        />
-        <input
-          type="password"
-          name="password"
-          placeholder="Password"
-          required
-          class="block w-full p-2 mb-4 border rounded bg-white text-black"
-        />
-        <button
-          type="submit"
-          class="bg-green-500 text-white py-2 px-4 rounded w-full"
-        >
-          Register
-        </button>
-      </form>
+        <h1 class="text-2xl font-bold">Register</h1>
+        <form id="register-form" class="mt-4">
+          <input
+            type="text"
+            name="name"
+            placeholder="Full Name"
+            required
+            class="block w-full p-2 mb-4 border rounded bg-white text-black"
+          />
+          <input
+            type="email"
+            name="email"
+            placeholder="Email@stud.noroff.no"
+            required
+            class="block w-full p-2 mb-4 border rounded bg-white text-black"
+          />
+          <input
+            type="password"
+            name="password"
+            placeholder="Password"
+            required
+            class="block w-full p-2 mb-4 border rounded bg-white text-black"
+          />
+          <button
+            type="submit"
+            class="bg-green-500 text-white py-2 px-4 rounded w-full"
+          >
+            Register
+          </button>
+        </form>
+      </div>
     </div>
-    </div
   `
 }
 
@@ -52,21 +52,29 @@ export function setupRegisterHandlers() {
       const password = event.target.password.value
 
       try {
+        // Register the user
         const response = await fetchApi('auth/register', {
           method: 'POST',
           body: JSON.stringify({ name, email, password }),
         })
 
+        console.log('Registration response:', response)
+
         if (response.token) {
+          // Store the token in local storage
           localStorage.setItem('token', response.token)
-          alert('Registration successful!')
-          window.location.href = '/profile' // Redirect to profile page
+
+          // Show a success alert
+          alert('Registration successful! Redirecting to login...')
+
+          // Redirect to login page
+          window.location.href = '/login'
         } else {
-          alert('Invalid credentials.')
+          alert('Registration failed. Please check your details.')
         }
       } catch (error) {
         console.error('Error registering:', error)
-        alert('Error registering!')
+        alert('An error occurred. Please try again.')
       }
     })
 }
