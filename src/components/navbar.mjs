@@ -75,3 +75,10 @@ export function renderNavbar(isLoggedIn) {
       </nav>
     `
 }
+
+export function setupNavbar() {
+  document.querySelector('#logout-btn')?.addEventListener('click', () => {
+    localStorage.removeItem('token')
+    window.location.href = '/'
+  })
+}
