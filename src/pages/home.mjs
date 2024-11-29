@@ -1,3 +1,5 @@
+import { fetchApi } from '../utils/api.mjs'
+
 export function renderHome() {
   return `
      <header class="flex flex-col items-center justify-center h-screen">
