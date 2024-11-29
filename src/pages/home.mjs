@@ -5,7 +5,7 @@ export async function renderHome() {
     const { data: listings } = await fetchListings()
     return `
  <div class="p-4">
-        <h1 class="text-4xl font-bold text-center mb-4">Bideals</h1>
+        <h1 class="text-6xl font-bold text-center mb-4 ">Bideals</h1>
         <p class="text-lg text-center mb-6">Bid for the Best Deal</p>
         
         <!-- Search Section -->
