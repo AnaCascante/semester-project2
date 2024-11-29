@@ -21,3 +21,17 @@ export async function fetchApi(endpoint, options = {}) {
 export function isAuthenticated() {
   return !!localStorage.getItem('token')
 }
+
+export async function searchListings(query) {
+  return await fetchApi(
+    `auction/listings/search?q=${encodeURIComponent(query)}`,
+  )
+}
+
+export async function fetchListings() {
+  return await fetchApi('auction/listings')
+}
+
+export async function fetchListingById(id) {
+  return await fetchApi(`auction/listings/${id}`)
+}

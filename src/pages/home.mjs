@@ -1,3 +1,5 @@
+import { fetchListings, searchListings } from '../utils/api.mjs'
+
 export function renderHome() {
   return `
      <div class="flex flex-col items-center justify-center h-screen">
@@ -19,7 +21,9 @@ export function renderHome() {
           Search
         </button>
       </div>
-
+ <div id="listings" class="grid grid-cols-1 md:grid-cols-3 gap-4">
+${listings.map(renderListingCard).join('')}
+</div>
     </div>
   `
 }
