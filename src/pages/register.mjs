@@ -18,7 +18,7 @@ export function renderRegister() {
         <input
           type="email"
           name="email"
-          placeholder="Email"
+          placeholder="Email@stud.noroff.no"
           required
           class="block w-full p-2 mb-4 border rounded bg-white text-black"
         />
