@@ -10,7 +10,7 @@ export function renderNavbar(isLoggedIn) {
             alt="Logo"
             class="h-12 w-12 object-contain rounded-full"
           />
-          <div class="">Bideals</div>
+          <h1 class="text-2x1 font-bold">Bideals</h1>
         </div>
   
         <!-- Navigation Items -->

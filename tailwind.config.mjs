@@ -6,7 +6,13 @@ module.exports = {
     './src/**/*.{html,js,css}',
   ],
   theme: {
-    extend: {},
+    extend: {
+      fontFamily: {
+        merienda: ['Merienda', 'cursive'],
+        trirong: ['Trirong', 'serif'],
+        units: ['Nunito', 'sans-serif'],
+      },
+    },
   },
   plugins: [],
 }

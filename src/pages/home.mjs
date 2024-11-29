@@ -4,7 +4,7 @@ export async function renderHome() {
   try {
     const { data: listings } = await fetchListings()
     return `
- <div class="p-4">
+ <div class="p-4 mt-20">
         <h1 class="text-6xl font-bold text-center mb-4 ">Bideals</h1>
         <p class="text-lg text-center mb-6">Bid for the Best Deal</p>
         
@@ -46,7 +46,7 @@ function renderListingCard(listing) {
   const endsAtFormatted = new Date(listing.endsAt).toLocaleDateString()
 
   return `
-    <div class="card p-4 border rounded shadow">
+    <div class="card p-4 border rounded shadow bg-white text-black">
       <img
         src="${listing.media[0]?.url || 'https://via.placeholder.com/150'}"
         alt="${listing.media[0]?.alt || 'Listing image'}"
@@ -57,7 +57,7 @@ function renderListingCard(listing) {
       <p class="text-sm text-gray-600">Bids: ${listing._count.bids}</p>
       <a
         href="/listing/${listing.id}"
-        class="text-blue-500 underline mt-2 block"
+        class="text-blue-500 underline mt-2 block text-2xl font-bold"
       >
         View Details
       </a>
@@ -69,6 +69,11 @@ export function setupSearchHandlers() {
   const searchInput = document.querySelector('#search-input')
   const searchButton = document.querySelector('#search-button')
   const listingsContainer = document.querySelector('#listings')
+
+  if (!searchInput || !searchButton || !listingsContainer) {
+    console.error('Missing search elements.')
+    return
+  }
 
   const handleSearch = async () => {
     const query = searchInput.value.trim()

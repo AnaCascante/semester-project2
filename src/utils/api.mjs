@@ -23,9 +23,8 @@ export function isAuthenticated() {
 }
 
 export async function searchListings(query) {
-  return await fetchApi(
-    `auction/listings/search?q=${encodeURIComponent(query)}`,
-  )
+  const response = await fetchApi(`auction/listings/search?q=${query}`)
+  return response
 }
 
 export async function fetchListings() {

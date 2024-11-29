@@ -1,3 +1,30 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+/* Import Tailwind CSS */
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities';
+
+h1 {
+  font-family: 'Merienda', cursive;
+  font-size: 1.5rem; /* equivalent to text-2xl */
+  font-weight: bold;
+}
+button {
+  font-family: 'Merienda', cursive;
+  font-size: 1.5rem; /* equivalent to text-2xl */
+  font-weight: bold;
+}
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: 'Trirong', serif;
+}
+h5,
+p {
+  font-family: 'Nunito', sans-serif;
+}
+
+p {
+  font-family: 'Nunito', sans-serif;
+}
