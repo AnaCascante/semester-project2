@@ -7,6 +7,20 @@ export function renderHome() {
     <header class="flex flex-col items-center justify-center h-screen">
       <h1 class="text-6xl">Bideals</h1>
       <p class="text-2xl">Bid for the Best Deal</p>
+  
+    </header>
+    
+  
+  `
+}
+/*
+export function renderHome() {
+  const data = fetchApi('auction/listings')
+  console.log(data)
+  return `
+    <header class="flex flex-col items-center justify-center h-screen">
+      <h1 class="text-6xl">Bideals</h1>
+      <p class="text-2xl">Bid for the Best Deal</p>
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4 p-4">
       ${data
         .map(
@@ -24,5 +38,5 @@ export function renderHome() {
     
   
   `
-}
+}*/
 // media url and alt, bid end date, current bid price, buy now price, bid button

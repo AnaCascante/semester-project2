@@ -6,7 +6,19 @@ export async function renderProduct(dataId) {
          <header class="flex flex-col items-center justify-center h-screen">
       <h1 class="text-6xl">Bideals</h1>
       <p class="text-2xl">Bid for the Best Deal</p>
-      <div class="p-4">
+   
+    </header>
+  `
+}
+
+/*
+export async function renderProduct(dataId) {
+  const product = await fetchAPI(`/products/${dataId}`)
+  return `
+         <header class="flex flex-col items-center justify-center h-screen">
+      <h1 class="text-6xl">Bideals</h1>
+      <p class="text-2xl">Bid for the Best Deal</p>
+     <div class="p-4">
       <h1 class="text-2xl font-bold">${data.title}</h1>
       <p>${data.description}</p>
       <p>Starting Bid: $${data.startingBid}</p>
@@ -21,4 +33,4 @@ export async function renderProduct(dataId) {
     </div>
     </header>
   `
-}
+}*/
