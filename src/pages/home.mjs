@@ -1,44 +1,66 @@
 import { fetchListings, searchListings } from '../utils/api.mjs'
 
-export function renderHome() {
-  return `
-     <div class="flex flex-col items-center justify-center h-screen">
-      <h1 class="text-6xl">Bideals</h1>
-      <p class="text-2xl">Bid for the Best Deal</p>
-      <div class="p-4">
-      <h1 class="text-2xl font-bold mb-4">Search Listings</h1>
-      <div class="mb-4">
-        <input
-          type="text"
-          id="search-input"
-          placeholder="Search by title or description"
-          class="w-full p-2 border rounded mb-2 bg-white text-black"
-        />
-        <button
-          id="search-button"
-          class="bg-blue-500 text-white py-2 px-4 rounded w-full"
-        >
-          Search
-        </button>
+export async function renderHome() {
+  try {
+    const { data: listings } = await fetchListings()
+    return `
+ <div class="p-4">
+        <h1 class="text-6xl font-bold text-center mb-4 ">Bideals</h1>
+        <p class="text-lg text-center mb-6">Bid for the Best Deal</p>
+        
+        <!-- Search Section -->
+        <div class="mb-6">
+          <h2 class="text-2xl font-bold mb-4">Search Listings</h2>
+          <div class="flex items-center gap-2 mb-4">
+            <input
+              type="text"
+              id="search-input"
+              placeholder="Search by title or description"
+              class="flex-grow p-2 border rounded bg-white text-black"
+            />
+            <button
+              id="search-button"
+              class="bg-blue-500 text-white py-2 px-4 rounded"
+            >
+              Search
+            </button>
+          </div>
+        </div>
+
+        <!-- Listings Section -->
+        <div>
+          <h2 class="text-2xl font-bold mb-4">Available Listings</h2>
+          <div id="listings" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            ${listings.map(renderListingCard).join('')}
+          </div>
+        </div>
       </div>
- <div id="listings" class="grid grid-cols-1 md:grid-cols-3 gap-4">
-${listings.map(renderListingCard).join('')}
-</div>
-    </div>
-  `
+      `
+  } catch (error) {
+    console.error(error)
+    return '<h1>Error fetching listings</h1>'
+  }
 }
 
-/*  this has to be added after the search input and button- its the function that will render the listings
- <div id="listings" class="grid grid-cols-1 md:grid-cols-3 gap-4">
-${listings.map(renderListingCard).join('')}
-</div> */
-
 function renderListingCard(listing) {
+  const endsAtFormatted = new Date(listing.endsAt).toLocaleDateString()
+
   return `
     <div class="card p-4 border rounded shadow">
-      <h2 class="font-bold">${listing.title}</h2>
-      <p>${listing.description}</p>
-      <a href="/listing/${listing.id}" class="text-blue-500">View More</a>
+      <img
+        src="${listing.media[0]?.url || 'https://via.placeholder.com/150'}"
+        alt="${listing.media[0]?.alt || 'Listing image'}"
+        class="w-full h-40 object-cover rounded mb-4"
+      />
+      <h3 class="font-bold text-lg">${listing.title}</h3>
+      <p class="text-sm text-gray-600">Ends: ${endsAtFormatted}</p>
+      <p class="text-sm text-gray-600">Bids: ${listing._count.bids}</p>
+      <a
+        href="/listing/${listing.id}"
+        class="text-blue-500 underline mt-2 block"
+      >
+        View Details
+      </a>
     </div>
   `
 }
@@ -56,9 +78,7 @@ export function setupSearchHandlers() {
     }
 
     try {
-      const searchResults = await fetchAPI(
-        `/auction/listings/search?q=${query}`,
-      )
+      const { data: searchResults } = await searchListings(query)
       listingsContainer.innerHTML = searchResults
         .map(renderListingCard)
         .join('')
