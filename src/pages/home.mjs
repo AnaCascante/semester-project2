@@ -1,7 +1,9 @@
 import { fetchListings, searchListings } from '../utils/api.mjs'
 
-export function renderHome() {
-  return `
+export async function renderHome() {
+  try {
+    const { data: listings } = await fetchListings()
+    return `
      <div class="flex flex-col items-center justify-center h-screen">
       <h1 class="text-6xl">Bideals</h1>
       <p class="text-2xl">Bid for the Best Deal</p>
@@ -21,11 +23,18 @@ export function renderHome() {
           Search
         </button>
       </div>
- <div id="listings" class="grid grid-cols-1 md:grid-cols-3 gap-4">
-${listings.map(renderListingCard).join('')}
-</div>
+    <div class="p-4">
+        <h1 class="text-2xl font-bold mb-4">Available Listings</h1>
+        <div id="listings" class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          ${listings.map(renderListingCard).join('')} <!-- Generate cards -->
+        </div>
+      </div>
     </div>
   `
+  } catch (error) {
+    console.error('Error fetching listings:', error)
+    return '<p class="text-red-500">Failed to load listings.</p>'
+  }
 }
 
 /*  this has to be added after the search input and button- its the function that will render the listings
@@ -34,11 +43,25 @@ ${listings.map(renderListingCard).join('')}
 </div> */
 
 function renderListingCard(listing) {
+  // Format the endsAt date
+  const endsAtFormatted = new Date(listing.endsAt).toLocaleDateString()
+
   return `
     <div class="card p-4 border rounded shadow">
-      <h2 class="font-bold">${listing.title}</h2>
-      <p>${listing.description}</p>
-      <a href="/listing/${listing.id}" class="text-blue-500">View More</a>
+      <img
+        src="${listing.media[0]?.url || 'https://via.placeholder.com/150'}"
+        alt="${listing.media[0]?.alt || 'Listing image'}"
+        class="w-full h-40 object-cover rounded mb-4"
+      />
+      <h2 class="font-bold text-lg">${listing.title}</h2>
+      <p class="text-sm text-gray-600">Ends: ${endsAtFormatted}</p>
+      <p class="text-sm text-gray-600">Bids: ${listing._count.bids}</p>
+      <a
+        href="/listing/${listing.id}"
+        class="text-blue-500 underline mt-2 block"
+      >
+        View Details
+      </a>
     </div>
   `
 }
