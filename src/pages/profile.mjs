@@ -1,21 +1,32 @@
 import { fetchApi, isAuthenticated } from '../utils/api.mjs'
 
-export async function renderProfile() {
+export async function renderProfile(name) {
   if (!isAuthenticated()) {
     return `<p class="text-red-500">Please log in to view your profile.</p>`
   }
 
   try {
+    // Build the API URL using the username
+    const { data: userData } = await fetchApi(
+      `auction/profiles/${name}?_bids=true&_listings=true`,
+    ) // Fetch user data with bids and listings
+    console.log("🚀 ~ renderProfile ~ data:", userData)
+    
+    if (!userData) {
+      return `<p class="text-red-500">User not found.</p>`
+    }
+
     // Retrieve the user from localStorage
-    const storedUser = localStorage.getItem('user'); // Replace 'user' with the actual key you used in localStorage
-    if (!storedUser) throw new Error('No user found in localStorage');
+    const storedUser = localStorage.getItem('user') // Replace 'user' with the actual key you used in localStorage
+    if (!storedUser) throw new Error('No user found in localStorage')
 
     // Parse the user data from JSON
-    const user = JSON.parse(storedUser);
-    const username = user.name; // Ensure the object contains a 'name' property
+    const user = JSON.parse(storedUser)
+    const username = user.name // Ensure the object contains a 'name' property
 
-    // Build the API URL using the username
-    const {data: userData} = await fetchApi(`auction/profiles/${username}?_bids=true&_listings=true`); // Fetch user data with bids and listings
+    if (name === username && userData) {
+      localStorage.setItem('user', JSON.stringify(userData))
+    }
 
     return `
 <div class="min-h-screen bg-black text-white flex flex-col items-center p-4">
@@ -54,8 +65,9 @@ export async function renderProfile() {
             : 'bg-gray-600 text-gray-200'
         }"
       >
-        ${userData.venueManager ? 'Venue Manager' : 'Regular User'}
+        Credits: ${userData.credits || 1000}
       </p>
+
       <button
         id="edit-avatar-button"
         class="px-4 py-2 text-sm font-medium rounded-lg shadow-md bg-blue-600 text-blue-100 hover:bg-blue-700 transition"
@@ -66,11 +78,11 @@ export async function renderProfile() {
   </div>
 
   <!-- Listings Section -->
-  <div class="w-full max-w-6xl">
-    <h2 class="text-3xl font-bold mb-6 text-center">Your Listings</h2>
-    ${
-      userData.listings && userData.listings.length > 0
-        ? `
+<div class="w-full max-w-6xl">
+  <h2 class="text-3xl font-bold mb-6 text-center">Your Listings</h2>
+  ${
+    userData.listings && userData.listings.length > 0
+      ? `
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         ${userData.listings
           .map(
@@ -92,28 +104,28 @@ export async function renderProfile() {
                 </p>
               </a>
             </div>
-          `
+          `,
           )
           .join('')}
       </div>
     `
-        : `
+      : `
       <p class="text-gray-500 text-center">You haven't created any listings yet.</p>
-
-      <div class="mt-4 text-center">
-        <a
-          href="/create/listing"
-          class="inline-block bg-blue-600 text-white py-3 px-6 rounded-lg hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 transition ease-in-out duration-200"
-        >
-          Create Your First Listing
-        </a>
-      </div>
     `
-    }
+  }
+
+  <!-- Button to create a new listing -->
+  <div class="mt-4 text-center">
+    <a
+      href="/create/listing"
+      class="inline-block bg-blue-600 text-white py-3 px-6 rounded-lg hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 transition ease-in-out duration-200"
+    >
+      Create Your First Listing
+    </a>
   </div>
 </div>
+</div>
 `
-    
   } catch (error) {
     console.error('Error fetching profile:', error)
     return `<p class="text-red-500">Failed to load profile. Please try again later.</p>`
@@ -136,16 +148,16 @@ export function setupProfileHandlers() {
 async function updateAvatar(newAvatar) {
   try {
     // Retrieve the user from localStorage
-    const storedUser = localStorage.getItem('user'); // Replace 'user' with the actual key you used in localStorage
-    if (!storedUser) throw new Error('No user found in localStorage');
+    const storedUser = localStorage.getItem('user') // Replace 'user' with the actual key you used in localStorage
+    if (!storedUser) throw new Error('No user found in localStorage')
 
     // Parse the user data from JSON
-    const user = JSON.parse(storedUser);
-    const username = user.name; // Ensure the object contains a 'name' property
+    const user = JSON.parse(storedUser)
+    const username = user.name // Ensure the object contains a 'name' property
 
     const userUpdated = await fetchApi(`social/profiles/${username}`, {
       method: 'PUT',
-      body: JSON.stringify({ avatar: {url:newAvatar} }),
+      body: JSON.stringify({ avatar: { url: newAvatar } }),
     })
 
     // set user

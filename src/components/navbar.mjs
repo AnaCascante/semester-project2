@@ -1,6 +1,8 @@
 export function renderNavbar() {
-  // Verifica si el usuario está autenticado
-  const isLoggedIn = localStorage.getItem('user') !== null;
+  const user = localStorage.getItem('user')
+  const userObj = user ? JSON.parse(user) : null
+  
+  const isLoggedIn = userObj !== null;
 
   return `
     <nav class="fixed left-0 top-0 z-50 flex h-20 w-full items-center border-b-4 border-grey-500 bg-black px-4 text-yellow-50 md:px-16 lg:px-24">
@@ -50,7 +52,7 @@ export function renderNavbar() {
         ${isLoggedIn
           ? `
             <li>
-              <a href="/profile" class="flex items-center">
+              <a href="/profile/${userObj.name}" class="flex items-center">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   fill="none"

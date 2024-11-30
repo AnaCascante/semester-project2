@@ -31,6 +31,10 @@ function isDynamicRoute(path) {
   return path.startsWith('/listings/')
 }
 
+function isDynamicProfileRoute(path) {
+  return path.startsWith('/profile/')
+}
+
 let isLoggedIn = false
 async function renderRoute() {
   const path = window.location.pathname
@@ -44,6 +48,9 @@ async function renderRoute() {
     const listingId = path.split('/listings/')[1]
     root.innerHTML = await renderListing(listingId) // Render single listing
     setupBidHandlers(listingId) // Setup bid functionality
+  } else if (isDynamicProfileRoute(path)) {
+    const name = path.split('/profile/')[1]
+    root.innerHTML = await renderProfile(name) // Render single listing
   } else {
     // Handle static routes
     const route = routes[path]

@@ -61,7 +61,7 @@ export function setupLoginHandlers() {
           localStorage.setItem('token', response.data.accessToken);
           localStorage.setItem('user', JSON.stringify(response.data));
           alert('Login successful!');
-          window.location.href = '/profile'; // Redirect to profile page
+          window.location.href = `/profile/${response.data.name}`; // Redirect to profile page
         } else {
           alert(response.message);
         }
