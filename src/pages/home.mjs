@@ -44,8 +44,16 @@ export async function renderHome() {
 }
 
 function renderListingCard(listing) {
-  const endsAtFormatted = new Date(listing.endsAt).toLocaleDateString()
-
+  const endsAtFormatted = new Date(listing.endsAt).toLocaleString('en-US', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit',
+    hour12: true, // Para formato AM/PM
+  });
+  
   return `
     <a href="/listings/${listing.id}" class="decoration-transparent">
       <div class="card p-4 border rounded-lg shadow bg-gray-800 text-white hover:bg-gray-700 transition duration-200">

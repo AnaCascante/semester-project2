@@ -202,7 +202,11 @@ export async function renderProfile(name) {
                       <!-- Listing Title -->
                       <h3 class="text-xl font-bold mb-2">${bid.listing.title}</h3>
                       <!-- Bid Amount -->
-                      <p class="text-sm text-gray-400">Your Bid: $${bid.amount}</p>
+                       ${
+                  isCurrentUser
+                    ? `<p class="text-sm text-gray-400">You bid: $${bid.amount}</p>`
+                    : `<p class="text-sm text-gray-400">Bid: $${bid.amount}</p>`
+                }
                       <!-- Listing Ends At -->
                       <p class="text-sm text-gray-400">
                         Ends At: ${new Date(bid.listing.endsAt).toLocaleDateString()}
@@ -229,6 +233,7 @@ export async function renderProfile(name) {
 
 export function setupProfileHandlers() {
   const editAvatarButton = document.querySelector('#edit-avatar-button')
+  console.log("🚀 ~ setupProfileHandlers ~ editAvatarButton:", editAvatarButton)
 
   if (editAvatarButton) {
     editAvatarButton.addEventListener('click', () => {

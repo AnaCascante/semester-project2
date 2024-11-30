@@ -51,6 +51,7 @@ async function renderRoute() {
   } else if (isDynamicProfileRoute(path)) {
     const name = path.split('/profile/')[1]
     root.innerHTML = await renderProfile(name) // Render single listing
+    setupProfileHandlers()
   } else {
     // Handle static routes
     const route = routes[path]

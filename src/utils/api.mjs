@@ -36,7 +36,7 @@ export async function searchListings(query) {
 }
 
 export async function fetchListings() {
-  return await fetchApi('auction/listings')
+  return await fetchApi('auction/listings?_active=true')
 }
 
 export async function fetchListingById(id) {
