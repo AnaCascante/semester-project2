@@ -56,7 +56,7 @@ function renderListingCard(listing) {
       <p class="text-sm text-gray-600">Ends: ${endsAtFormatted}</p>
       <p class="text-sm text-gray-600">Bids: ${listing._count.bids}</p>
       <a
-        href="/listing/${listing.id}"
+        href="/listings/${listing.id}"
         class="text-blue-500 underline mt-2 block text-2xl font-bold"
       >
         View Details
