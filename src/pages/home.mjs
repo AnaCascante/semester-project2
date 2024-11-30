@@ -21,6 +21,7 @@ export async function renderHome() {
             <button
               id="search-button"
               class="bg-blue-500 text-white py-2 px-4 rounded"
+              type="button"
             >
               Search
             </button>
@@ -46,22 +47,29 @@ function renderListingCard(listing) {
   const endsAtFormatted = new Date(listing.endsAt).toLocaleDateString()
 
   return `
-    <div class="card p-4 border rounded shadow bg-white text-black">
-      <img
-        src="${listing.media[0]?.url || 'https://via.placeholder.com/150'}"
-        alt="${listing.media[0]?.alt || 'Listing image'}"
-        class="w-full h-40 object-cover rounded mb-4"
-      />
-      <h3 class="font-bold text-lg">${listing.title}</h3>
-      <p class="text-sm text-gray-600">Ends: ${endsAtFormatted}</p>
-      <p class="text-sm text-gray-600">Bids: ${listing._count.bids}</p>
-      <a
-        href="/listings/${listing.id}"
-        class="text-blue-500 underline mt-2 block text-2xl font-bold"
-      >
-        View Details
-      </a>
-    </div>
+    <a href="/listings/${listing.id}" class="decoration-transparent">
+      <div class="card p-4 border rounded-lg shadow bg-gray-800 text-white hover:bg-gray-700 transition duration-200">
+        <img
+          src="${listing.media[0]?.url || 'https://via.placeholder.com/150'}"
+          alt="${listing.media[0]?.alt || 'Listing image'}"
+          class="w-full h-40 object-cover rounded mb-4"
+        />
+        <h3 class="font-bold text-lg mb-2">${listing.title}</h3>
+        <p class="text-sm text-gray-400 mb-2">Ends: ${endsAtFormatted}</p>
+        <p class="text-sm text-gray-400 mb-4">Bids: ${listing._count.bids}</p>
+
+        <!-- Show tags if available -->
+        ${listing.tags && listing.tags.length > 0 ? `
+          <div class="mt-2 flex flex-wrap gap-2">
+            ${listing.tags.map(tag => `
+              <span class="bg-gray-600 text-xs text-gray-200 px-2 py-1 rounded-full">${tag}</span>
+            `).join('')}
+          </div>
+        ` : `
+          <p class="text-gray-500 text-xs mt-2">No tags available</p>
+        `}
+      </div>
+    </a>
   `
 }
 
@@ -84,6 +92,7 @@ export function setupSearchHandlers() {
 
     try {
       const { data: searchResults } = await searchListings(query)
+      console.log("🚀 ~ handleSearch ~ searchResults:", searchResults)
       listingsContainer.innerHTML = searchResults
         .map(renderListingCard)
         .join('')

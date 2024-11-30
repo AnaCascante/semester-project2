@@ -2,7 +2,7 @@ import './style.css'
 import { renderNavbar } from './components/navbar.mjs'
 import { renderFooter } from './components/footer.mjs'
 
-import { renderHome } from './pages/home.mjs'
+import { renderHome, setupSearchHandlers } from './pages/home.mjs'
 import { renderListing, setupBidHandlers } from './pages/listing.mjs'
 import { renderLogin, setupLoginHandlers } from './pages/login.mjs'
 import { renderRegister, setupRegisterHandlers } from './pages/register.mjs'
@@ -14,7 +14,7 @@ import {
 import { renderLogout } from './pages/logout.mjs'
 
 const routes = {
-  '/': { render: renderHome },
+  '/': { render: renderHome, extra: setupSearchHandlers },
   '/login': { render: renderLogin, extra: setupLoginHandlers },
   '/register': { render: renderRegister, extra: setupRegisterHandlers },
   '/profile': { render: renderProfile, extra: setupProfileHandlers },
