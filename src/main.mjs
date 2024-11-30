@@ -6,18 +6,21 @@ import { renderHome } from './pages/home.mjs'
 import { renderListing, setupBidHandlers } from './pages/listing.mjs'
 import { renderLogin, setupLoginHandlers } from './pages/login.mjs'
 import { renderRegister, setupRegisterHandlers } from './pages/register.mjs'
-import { renderProfile } from './pages/profile.mjs'
+import { renderProfile, setupProfileHandlers } from './pages/profile.mjs'
+import { renderCreateListing, setupNewListingHandlers } from './pages/createListing.mjs'
 
 const routes = {
   '/': { render: renderHome },
   '/login': { render: renderLogin, extra: setupLoginHandlers },
   '/register': { render: renderRegister, extra: setupRegisterHandlers },
-  '/profile': { render: renderProfile },
+  '/profile': { render: renderProfile, extra: setupProfileHandlers },
+  '/listings': { render: renderListing },
+  '/create/listing': { render: renderCreateListing, extra: setupNewListingHandlers },
 }
 
 // Dynamic route handling for `/listing/:id`
 function isDynamicRoute(path) {
-  return path.startsWith('/listing/')
+  return path.startsWith('/listings/')
 }
 
 let isLoggedIn = false
@@ -30,14 +33,11 @@ async function renderRoute() {
 
   // Handle dynamic routes for `/listing/:id`
   if (isDynamicRoute(path)) {
-    const listingId = path.split('/listing/')[1]
+    const listingId = path.split('/listings/')[1]
     root.innerHTML = await renderListing(listingId) // Render single listing
     setupBidHandlers(listingId) // Setup bid functionality
-  } else if (path === '/profile') {
-    // Handle profile page
-    root.innerHTML = await renderProfile()
-    setupProfileHandlers() // Attach handlers for profile-specific actions
-  } else {
+  }
+   else {
     // Handle static routes
     const route = routes[path]
     if (route) {

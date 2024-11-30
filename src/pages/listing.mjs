@@ -5,69 +5,84 @@ export async function renderListing(listingId) {
     const { data: listing } = await fetchApi(
       `auction/listings/${listingId}?_bids=true&_seller=true`,
     )
+
+    if (!listing) {
+      throw new Error('Listing not found')
+    }
+
     const endsAtFormatted = new Date(listing.endsAt).toLocaleDateString()
 
     return `
-    <div class="container mx-auto mt-20 p-4">
-      <h1 class="text-3xl font-bold mb-6 text-center">${listing.title}</h1>
-      <div class="card p-6 border rounded-lg shadow-lg bg-white">
-        <img
-          src="${listing.media[0]?.url || 'https://via.placeholder.com/150'}"
-          alt="${listing.media[0]?.alt || 'Listing image'}"
-          class="w-full h-60 object-cover rounded mb-4"
-        />
-        <p class="text-sm">${listing.description}</p>
-        <p class="text-sm text-black">Ends At: ${endsAtFormatted}</p>
-        <p class="text-sm text-black">Total Bids: ${listing._count.bids}</p>
-
-        ${
-          isAuthenticated()
-            ? `
-            <div class="mt-4">
-              <input
-                type="number"
-                id="bid-input"
-                placeholder="Enter your bid"
-                class="w-full p-2 border rounded mb-2 bg-white text-black"
-              />
-              <button
-                id="bid-button"
-                class="bg-gray-500 text-white py-2 px-4 rounded w-full"
-              >
-                Place Bid
-              </button>
-            </div>
-            `
-            : `
-            <p class="text-red-500 mt-4">Login to place a bid.</p>
-            <button
-              id="register-alert-button"
-              class="bg-green-500 text-white py-2 px-4 rounded w-full mt-4"
-            >
-              Register Now
-            </button>
-            `
-        }
+     <div class="container mx-auto mt-16 p-6">
+  <!-- Título y Card -->
+  <div class="flex justify-center">
+    <div class="w-full max-w-3xl bg-white shadow-lg rounded-lg p-6">
+      <h1 class="text-4xl font-extrabold text-center text-gray-800 mb-6">${listing.title}</h1>
+      
+      <!-- Imagen principal -->
+      <img
+        src="${listing.media[0]?.url || 'https://via.placeholder.com/600x400'}"
+        alt="${listing.media[0]?.alt || 'Listing image'}"
+        class="w-full h-80 object-cover rounded-xl mb-6"
+      />
+      
+      <!-- Descripción y detalles -->
+      <div class="space-y-4">
+        <p class="text-lg text-gray-700">${listing.description}</p>
+        <div class="flex justify-between text-sm text-gray-600">
+          <p><strong>Ends At:</strong> ${endsAtFormatted}</p>
+          <p><strong>Total Bids:</strong> ${listing._count.bids}</p>
+        </div>
       </div>
-      <div class="mt-4">
-        <h2 class="text-xl font-bold">Bids:</h2>
-        ${
-          listing.bids && listing.bids.length > 0
-            ? `
-          <ul>
-            ${listing.bids
-              .map(
-                (bid) =>
-                  `<li class="text-sm text-gray-600">Bid: $${bid.amount}</li>`,
-              )
-              .join('')}
-          </ul>
-        `
-            : `<p>No bids yet.</p>`
-        }
+
+      <!-- Acciones del usuario -->
+      <div class="mt-6">
+        ${isAuthenticated() ? `
+          <div class="space-y-4">
+            <input
+              type="number"
+              id="bid-input"
+              placeholder="Enter your bid"
+              class="w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+            <button
+              id="bid-button"
+              class="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 transition ease-in-out duration-200"
+            >
+              Place Bid
+            </button>
+          </div>
+        ` : `
+          <p class="text-red-600 text-center">Please log in to place a bid.</p>
+          <button
+            id="register-alert-button"
+            class="w-full mt-4 bg-green-600 text-white py-3 rounded-lg hover:bg-green-700 focus:ring-2 focus:ring-green-500 transition ease-in-out duration-200"
+          >
+            Register Now
+          </button>
+        `}
       </div>
     </div>
-  `
+  </div>
+
+  <!-- Lista de Ofertas -->
+  <div class="mt-12 max-w-3xl mx-auto">
+    <h2 class="text-2xl font-semibold text-gray-800 mb-4">Bids:</h2>
+    ${listing.bids && listing.bids.length > 0 ? `
+      <ul class="space-y-3">
+        ${listing.bids.map(bid => `
+          <li class="flex justify-between items-center bg-gray-50 p-4 rounded-lg shadow-md">
+            <span class="text-gray-700 text-sm">Bid: $${bid.amount}</span>
+            <span class="text-gray-500 text-xs">${new Date(bid.timestamp).toLocaleString()}</span>
+          </li>
+        `).join('')}
+      </ul>
+    ` : `
+      <p class="text-center text-gray-500">No bids yet.</p>
+    `}
+  </div>
+</div>
+    `
   } catch (error) {
     console.error('Error fetching listing:', error)
     return `<p class="text-red-500">Failed to load listing. Please try again later.</p>`

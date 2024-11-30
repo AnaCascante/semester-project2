@@ -6,84 +6,114 @@ export async function renderProfile() {
   }
 
   try {
-    const userData = await fetchApi('users/me?_bids=true&_listings=true') // Fetch user data with bids and created listings
+    // Retrieve the user from localStorage
+    const storedUser = localStorage.getItem('user'); // Replace 'user' with the actual key you used in localStorage
+    if (!storedUser) throw new Error('No user found in localStorage');
+
+    // Parse the user data from JSON
+    const user = JSON.parse(storedUser);
+    const username = user.name; // Ensure the object contains a 'name' property
+
+    // Build the API URL using the username
+    const {data: userData} = await fetchApi(`auction/profiles/${username}?_bids=true&_listings=true`); // Fetch user data with bids and listings
 
     return `
-    <div class="p-4 container mx-auto">
-      <!-- User Profile Section -->
-      <div class="profile-header flex items-center gap-4 mb-6">
-        <img
-          src="${userData.avatar || 'https://via.placeholder.com/150'}"
-          alt="User Avatar"
-          class="w-24 h-24 rounded-full object-cover"
-        />
-        <div>
-          <h1 class="text-3xl font-bold">${userData.username}</h1>
-          <p class="text-sm text-gray-500">${userData.email}</p>
-          <p class="text-green-500 font-bold mt-2">Credits: ${userData.credits || 1000}</p>
-          <button
-            id="edit-avatar-button"
-            class="bg-blue-500 text-white px-4 py-2 rounded mt-2"
-          >
-            Edit Avatar
-          </button>
-        </div>
-      </div>
-
-      <!-- User Bids Section -->
-      <div class="user-bids mb-6">
-        <h2 class="text-2xl font-bold mb-4">Your Bids</h2>
-        ${
-          userData.bids && userData.bids.length > 0
-            ? `
-          <ul class="space-y-2">
-            ${userData.bids
-              .map(
-                (bid) =>
-                  `<li class="border p-4 rounded bg-gray-100">
-                    <p class="font-bold">Listing: ${bid.listingTitle}</p>
-                    <p class="text-sm text-gray-600">Bid Amount: $${bid.amount}</p>
-                  </li>`,
-              )
-              .join('')}
-          </ul>
-        `
-            : `<p class="text-gray-500">You haven't placed any bids yet.</p>`
-        }
-      </div>
-
-      <!-- User Created Listings Section -->
-      <div class="user-listings mb-6">
-        <h2 class="text-2xl font-bold mb-4">Your Created Listings</h2>
-        ${
-          userData.listings && userData.listings.length > 0
-            ? `
-          <ul class="space-y-2">
-            ${userData.listings
-              .map(
-                (listing) =>
-                  `<li class="border p-4 rounded bg-gray-100">
-                    <p class="font-bold">${listing.title}</p>
-                    <p class="text-sm text-gray-600">Ends At: ${new Date(
-                      listing.endsAt,
-                    ).toLocaleDateString()}</p>
-                    <button
-                      class="bg-red-500 text-white px-4 py-2 rounded mt-2"
-                      data-listing-id="${listing.id}"
-                      onclick="deleteListing('${listing.id}')"
-                    >
-                      Delete Listing
-                    </button>
-                  </li>`,
-              )
-              .join('')}
-          </ul>
-        `
-            : `<p class="text-gray-500">You haven't created any listings yet.</p>`
-        }
-      </div>
+<div class="min-h-screen bg-black text-white flex flex-col items-center p-4">
+  <!-- Banner Section -->
+  <div class="relative w-full max-w-6xl rounded-lg mb-12">
+    <img
+      src="${userData.banner?.url || 'https://via.placeholder.com/600x200'}"
+      alt="${userData.banner?.alt || 'User banner'}"
+      class="w-full h-64 object-cover rounded-lg"
+    />
+    <!-- Avatar -->
+    <div class="absolute bottom-[-48px] left-1/2 transform -translate-x-1/2">
+      <img
+        src="${userData.avatar?.url || 'https://via.placeholder.com/150'}"
+        alt="${userData.avatar?.alt || 'User avatar'}"
+        class="w-32 h-32 rounded-full object-cover border-4 border-yellow-400 shadow-lg"
+      />
     </div>
-  `
+  </div>
+
+  <!-- Profile Section -->
+  <div class="flex justify-between items-center mt-4 w-full max-w-6xl mb-12">
+    <!-- User Info -->
+    <div class="space-y-1">
+      <h1 class="text-5xl font-extrabold text-white mb-1">
+        ${userData.name || 'User Name'}
+      </h1>
+      <p class="text-xl text-yellow-400">${userData.email || 'User Email'}</p>
+    </div>
+
+    <div class="flex items-center justify-end gap-2">
+      <p
+        class="px-4 py-2 text-sm font-medium rounded-lg shadow-md ${
+          userData.venueManager
+            ? 'bg-green-600 text-green-100'
+            : 'bg-gray-600 text-gray-200'
+        }"
+      >
+        ${userData.venueManager ? 'Venue Manager' : 'Regular User'}
+      </p>
+      <button
+        id="edit-avatar-button"
+        class="px-4 py-2 text-sm font-medium rounded-lg shadow-md bg-blue-600 text-blue-100 hover:bg-blue-700 transition"
+      >
+        Edit avatar
+      </button>
+    </div>
+  </div>
+
+  <!-- Listings Section -->
+  <div class="w-full max-w-6xl">
+    <h2 class="text-3xl font-bold mb-6 text-center">Your Listings</h2>
+    ${
+      userData.listings && userData.listings.length > 0
+        ? `
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        ${userData.listings
+          .map(
+            (listing) => `
+            <div class="bg-gray-800 rounded-lg shadow-lg p-4">
+              <!-- Link to the listing page -->
+              <a href="/listings/${listing.id}" class="block">
+                <!-- Listing Image -->
+                <img
+                  src="${listing.media?.[0]?.url || 'https://via.placeholder.com/300'}"
+                  alt="${listing.media?.[0]?.alt || 'Listing image'}"
+                  class="w-full h-48 object-cover rounded-lg mb-4"
+                />
+                <!-- Listing Title -->
+                <h3 class="text-xl font-bold mb-2">${listing.title}</h3>
+                <!-- Listing Ends At -->
+                <p class="text-sm text-gray-400 mb-4">
+                  Ends At: ${new Date(listing.endsAt).toLocaleDateString()}
+                </p>
+              </a>
+            </div>
+          `
+          )
+          .join('')}
+      </div>
+    `
+        : `
+      <p class="text-gray-500 text-center">You haven't created any listings yet.</p>
+
+      <div class="mt-4 text-center">
+        <a
+          href="/create/listing"
+          class="inline-block bg-blue-600 text-white py-3 px-6 rounded-lg hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 transition ease-in-out duration-200"
+        >
+          Create Your First Listing
+        </a>
+      </div>
+    `
+    }
+  </div>
+</div>
+`
+    
   } catch (error) {
     console.error('Error fetching profile:', error)
     return `<p class="text-red-500">Failed to load profile. Please try again later.</p>`
@@ -105,10 +135,22 @@ export function setupProfileHandlers() {
 
 async function updateAvatar(newAvatar) {
   try {
-    await fetchApi('users/me/avatar', {
+    // Retrieve the user from localStorage
+    const storedUser = localStorage.getItem('user'); // Replace 'user' with the actual key you used in localStorage
+    if (!storedUser) throw new Error('No user found in localStorage');
+
+    // Parse the user data from JSON
+    const user = JSON.parse(storedUser);
+    const username = user.name; // Ensure the object contains a 'name' property
+
+    const userUpdated = await fetchApi(`social/profiles/${username}`, {
       method: 'PUT',
-      body: JSON.stringify({ avatar: newAvatar }),
+      body: JSON.stringify({ avatar: {url:newAvatar} }),
     })
+
+    // set user
+    localStorage.setItem('user', JSON.stringify(userUpdated.data))
+
     alert('Avatar updated successfully!')
     window.location.reload() // Reload the page to reflect the changes
   } catch (error) {
@@ -122,8 +164,9 @@ async function deleteListing(listingId) {
     const confirmDelete = confirm(
       'Are you sure you want to delete this listing?',
     )
+
     if (confirmDelete) {
-      await fetchApi(`listings/${listingId}`, { method: 'DELETE' })
+      await fetchApi(`auction/listings/${listingId}`, { method: 'DELETE' })
       alert('Listing deleted successfully!')
       window.location.reload() // Reload the page to reflect the changes
     }
