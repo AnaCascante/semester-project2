@@ -30,10 +30,19 @@ export function isAuthenticated() {
 }
 
 export async function searchListings(query) {
-  const response = await fetchApi(`auction/listings?_title=${query}&_description=${query}&_active=true`)
+  const response = await fetchApi(`auction/listings/search?q=${query}`)
+  
+  const currentDate = new Date();
 
-  return response
-  console.log("🚀 ~ searchListings ~ response:", response)
+  const filteredData = response.data.filter((item) => {
+    const endsAtDate = new Date(item.endsAt);
+    return endsAtDate >= currentDate;
+  });
+    
+  return {
+    ...response,
+    data: filteredData,
+  }
 }
 
 export async function fetchListings() {
