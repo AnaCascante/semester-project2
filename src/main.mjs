@@ -7,7 +7,11 @@ import { renderListing, setupBidHandlers } from './pages/listing.mjs'
 import { renderLogin, setupLoginHandlers } from './pages/login.mjs'
 import { renderRegister, setupRegisterHandlers } from './pages/register.mjs'
 import { renderProfile, setupProfileHandlers } from './pages/profile.mjs'
-import { renderCreateListing, setupNewListingHandlers } from './pages/createListing.mjs'
+import {
+  renderCreateListing,
+  setupNewListingHandlers,
+} from './pages/createListing.mjs'
+import { renderLogout } from './pages/logout.mjs'
 
 const routes = {
   '/': { render: renderHome },
@@ -15,7 +19,11 @@ const routes = {
   '/register': { render: renderRegister, extra: setupRegisterHandlers },
   '/profile': { render: renderProfile, extra: setupProfileHandlers },
   '/listings': { render: renderListing },
-  '/create/listing': { render: renderCreateListing, extra: setupNewListingHandlers },
+  '/create/listing': {
+    render: renderCreateListing,
+    extra: setupNewListingHandlers,
+  },
+  '/logout': { render: renderLogout },
 }
 
 // Dynamic route handling for `/listing/:id`
@@ -36,8 +44,7 @@ async function renderRoute() {
     const listingId = path.split('/listings/')[1]
     root.innerHTML = await renderListing(listingId) // Render single listing
     setupBidHandlers(listingId) // Setup bid functionality
-  }
-   else {
+  } else {
     // Handle static routes
     const route = routes[path]
     if (route) {
