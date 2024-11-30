@@ -60,21 +60,12 @@ export function setupRegisterHandlers() {
 
         console.log('Registration response:', response)
 
-        if (response.token) {
-          // Store the token in local storage
-          localStorage.setItem('token', response.token)
-
-          const credits = 1000
-
-          // Show a success alert
-          alert(
-            'Registration successful! You have been awarded $${credits} in credits.',
-          )
-
-          // Redirect to login page
-          window.location.href = '/login'
+        if (!response?.statusCode) {
+          localStorage.setItem('token', response.data.accessToken);
+          alert('Registration successful!')
+          window.location.href = '/login' // Redirect to profile page
         } else {
-          alert('Registration failed. Please check your details.')
+          alert(response.message);
         }
       } catch (error) {
         console.error('Error registering:', error)

@@ -46,35 +46,28 @@ export function setupLoginHandlers() {
   document
     .querySelector('#login-form')
     .addEventListener('submit', async (event) => {
-      event.preventDefault()
+      event.preventDefault();
 
-      const email = event.target.email.value
-      const password = event.target.password.value
+      const email = event.target.email.value;
+      const password = event.target.password.value;
 
       try {
-        // Log the user in
         const response = await fetchApi('auth/login', {
           method: 'POST',
           body: JSON.stringify({ email, password }),
-        })
+        });
 
-        console.log('Login response:', response)
-
-        if (response.token) {
-          // Store the token in local storage
-          localStorage.setItem('token', response.token)
-
-          // Show a success alert
-          alert('Login successful! Redirecting to your profile...')
-
-          // Redirect to the profile page
-          window.location.href = '/profile'
+        if (!response?.statusCode) {
+          localStorage.setItem('token', response.data.accessToken);
+          localStorage.setItem('user', JSON.stringify(response.data));
+          alert('Login successful!');
+          window.location.href = '/profile'; // Redirect to profile page
         } else {
-          alert('Invalid email or password.')
+          alert(response.message);
         }
       } catch (error) {
-        console.error('Login error:', error)
-        alert('An error occurred. Please try again.')
+        console.error('Login error:', error);
+        alert('Something went wrong. Please try again.');
       }
-    })
+    });
 }

@@ -4,15 +4,15 @@ import { renderFooter } from './components/footer.mjs'
 
 import { renderHome } from './pages/home.mjs'
 import { renderListing, setupBidHandlers } from './pages/listing.mjs'
-import { renderLogin } from './pages/login.mjs'
-import { renderRegister } from './pages/register.mjs'
-import { renderProfile, setupProfileHandlers } from './pages/profile.mjs'
+import { renderLogin, setupLoginHandlers } from './pages/login.mjs'
+import { renderRegister, setupRegisterHandlers } from './pages/register.mjs'
+import { renderProfile } from './pages/profile.mjs'
 
 const routes = {
-  '/': renderHome,
-  '/login': renderLogin,
-  '/register': renderRegister,
-  '/profile': renderProfile,
+  '/': { render: renderHome },
+  '/login': { render: renderLogin, extra: setupLoginHandlers },
+  '/register': { render: renderRegister, extra: setupRegisterHandlers },
+  '/profile': { render: renderProfile },
 }
 
 // Dynamic route handling for `/listing/:id`
@@ -21,7 +21,6 @@ function isDynamicRoute(path) {
 }
 
 let isLoggedIn = false
-
 async function renderRoute() {
   const path = window.location.pathname
   const root = document.getElementById('root')
@@ -42,7 +41,8 @@ async function renderRoute() {
     // Handle static routes
     const route = routes[path]
     if (route) {
-      root.innerHTML = await route() // Render static page
+      root.innerHTML = await route.render() // Render static page
+      if (route.extra) route.extra() // Execute extra function if available
     } else {
       root.innerHTML = '<h1>404 - Page Not Found</h1>'
     }
