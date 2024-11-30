@@ -233,7 +233,6 @@ export async function renderProfile(name) {
 
 export function setupProfileHandlers() {
   const editAvatarButton = document.querySelector('#edit-avatar-button')
-  console.log("🚀 ~ setupProfileHandlers ~ editAvatarButton:", editAvatarButton)
 
   if (editAvatarButton) {
     editAvatarButton.addEventListener('click', () => {

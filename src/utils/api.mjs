@@ -30,7 +30,7 @@ export function isAuthenticated() {
 }
 
 export async function searchListings(query) {
-  const response = await fetchApi(`auction/listings/search?q=${query}`)
+  const response = await fetchApi(`auction/listings/search?q=${query}?_active=true`)
   return response
   console.log("🚀 ~ searchListings ~ response:", response)
 }

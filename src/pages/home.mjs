@@ -25,6 +25,13 @@ export async function renderHome() {
             >
               Search
             </button>
+
+            <a
+              class="bg-blue-500 text-white py-2 px-4 rounded"
+              href="/"
+            >
+              Reset
+            </a>
           </div>
         </div>
 
