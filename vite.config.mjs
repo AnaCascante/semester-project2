@@ -1,5 +1,12 @@
-import { defineConfig } from "vite";
+import { defineConfig } from 'vite'
 
 export default defineConfig({
-  // customize your Vite settings here
-});
+  build: {
+    rollupOptions: {
+      output: {
+        assetFileNames: '[name][extname]',
+      },
+    },
+  },
+  base: './',
+})
